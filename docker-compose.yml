@@ -1,0 +1,33 @@
+version: '3'
+
+networks:
+  my_network:
+    driver: bridge
+
+services:
+  vectordb:
+    image: ankane/pgvector
+    ports:
+      - '5432:5432'
+    volumes:
+      - './data:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_PASSWORD=ChangeMe
+      - POSTGRES_USER=myuser
+      - POSTGRES_DB=api
+    networks:
+      - my_network
+  nodejs-openai-app:
+    networks:
+      - my_network
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./:/usr/src/app
+    env_file:
+      - .env
+    depends_on:
+      - vectordb

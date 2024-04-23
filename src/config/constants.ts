@@ -1,0 +1,1 @@
+export const VECTORDB = 'vectordb';
